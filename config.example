@@ -1,0 +1,76 @@
+#!/usr/bin/bash
+
+#
+# *Note:* This is an example file only. Adapt to you own needs and rename
+# it to 'config' before running anything.
+#
+
+#
+# The name of the SSH key uploaded to hcloud
+#
+# List all currently available keys with:
+#   hcloud ssh-key list
+
+SSH_KEY_NAME="<name of key>"
+
+#
+# Type of server that will be allocated.
+#
+# With great power come great bills ;-)
+#
+# List all available server types with:
+#   hcloud  server-type list
+
+SERVER_TYPE="cx51"
+
+#
+# Private key base URL
+#
+# Set to a location for using a valid key/cert combination. You will
+# need a wildcard certificate for that. This also works with Let's encrypt.
+#
+
+# e.g. PRIVATE_KEY_URL_BASE=https://dentrassi.de//
+
+#
+# The datacenter to use
+#
+
+DATACENTER="nbg1-dc3"
+
+#
+# DNS mode, defaults to "manual"
+#
+# When a new machine is created and public DNS should be used, DNS A records
+# have to be properly created. By default this is a manual task. If you use
+# Plesk for managing your DNS domain, then you can switch the DNS_MODE to
+# 'plesk'. In this case you must set the config variables
+# PLESK_HOST, PLESK_PORT, PLESK_USER, PLESK_PASSWORD as well.
+#
+
+# DNS_MODE=manual
+
+#
+# When using public DNS, two config variables are used to generate the final
+# DNS names.
+#
+# BASE_DOMAIN is the name of the DNS domain you control. SUB_DOMAIN_PART can
+# be used as a prefix to the BASE_DOMAIN. From a DNS perspective the
+# SUB_DOMAIN_PART part could already be part of the BASE_DOMAIN, however e.g.
+# Plesk has a "site", which is the BASE_DOMAIN. The final name will be:
+#
+# INSTANCE_NAME.SUB_DOMAIN_PART.BASE_DOMAIN
+#
+# *NOTE:* Of course you cannot use 'iot-playground.org', you need to put in
+# your own domain. Or stick to using 'nip.io'.
+#
+
+# SUB_DOMAIN_PART=amazing
+# BASE_DOMAIN=iot-playground.org
+
+#
+# Using a pre-generated SSL key/cert
+#
+# If you want to use a pre-generated SSL key/cert, instead of a self-signed, then
+# you can specify the variable 'PRIVATE_KEY_BASE' with a URL to download
+# the key/cert from. See the 'letsencrypt' folder for more information.

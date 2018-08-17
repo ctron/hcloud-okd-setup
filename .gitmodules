@@ -1,0 +1,4 @@
+[submodule "openshift-ansible"]
+	path = okd/openshift-ansible
+	url = https://github.com/openshift/openshift-ansible/
+	branch = release-3.10

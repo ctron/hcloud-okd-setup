@@ -1,0 +1,122 @@
+#!/usr/bin/python3
+
+import sys
+import os
+import http.client
+import ssl
+import xmltodict
+import json
+from collections import OrderedDict
+
+INSTANCE_NAME = sys.argv[1]
+SUB_DOMAIN_PART = sys.argv[2]
+BASE_DOMAIN = sys.argv[3]
+PUBLIC_IP = sys.argv[4]
+
+if not SUB_DOMAIN_PART.startswith("'"):
+    SUB_DOMAIN_PART = "." + SUB_DOMAIN_PART
+
+REMOTE_HOST=os.environ["PLESK_HOST"]
+REMOTE_PORT=os.environ["PLESK_PORT"]
+REMOTE_USER=os.environ["PLESK_USER"]
+REMOTE_PASSWORD=os.environ["PLESK_PASSWORD"]
+
+def simple_request(type, operation, req):
+    return request({
+        'packet':{
+            type: {
+                operation: req
+            }
+        }
+    })["packet"][type][operation]
+
+def request(request):
+    headers = {}
+    headers["Content-type"] = "text/xml"
+    headers["HTTP_PRETTY_PRINT"] = "TRUE"
+    headers["HTTP_AUTH_LOGIN"] = REMOTE_USER
+    headers["HTTP_AUTH_PASSWD"] = REMOTE_PASSWORD
+    
+    con = http.client.HTTPSConnection(REMOTE_HOST, REMOTE_PORT)
+    
+    xml = xmltodict.unparse(request, pretty=True)
+    # print ( "Request: %s" % xml )
+    con.request("POST", "/enterprise/control/agent.php", xml, headers)
+    response = con.getresponse()
+    
+    data = response.read().decode("utf-8") 
+    # print ( "Response: %s" % data )
+    result = xmltodict.parse(data )
+    # print ( "Result: %s" % result )
+    return result
+
+def set_dns_record(site_id,type,host,domain,value):
+    
+    entries = find_dns_entries ( site_id, type, host + "." + domain + "." )
+    print ( "Delete entries: %s" % entries )
+    
+    delete_dns_records(site_id, entries)
+    add_dns_record(site_id, type, host, value)
+
+def add_dns_record(site_id, type, host, value):
+    simple_request('dns','add_rec',OrderedDict([
+        ('site-id', site_id),
+        ('type', type),
+        ('host', host),
+        ('value', value)
+    ]))
+
+def delete_dns_records(site_id, entries):
+    if not entries:
+        return
+    
+    req = []
+    for i in entries:
+        req.append({
+            'del_rec': {
+                'filter': {
+                    'id': i
+                }
+            }
+        })
+    
+    request({
+        'packet':{
+            'dns': req
+        }
+    })
+
+def find_site(domain):
+    return simple_request('site', 'get', OrderedDict([
+        ('filter', {'name': domain}),
+        ('dataset', {})
+    ]))["result"]["id"]
+
+def find_dns_entries(site_id,type,host):
+    print("Searching for: %s" % host )
+    result = simple_request('dns', 'get_rec', {
+       'filter': {
+            'site-id': site_id
+        }
+    })
+    
+    ids = []
+    # print("Result: %s" % json.dumps(result, indent=4) )
+    for value in result["result"]:
+        #print ( "Value: " + str(value) )
+        if value["data"]["type"] != type:
+            continue
+        
+        if value["data"]["host"] != host:
+            continue
+        
+        ids.append(value["id"])
+    
+    return ids
+
+site_id = find_site(BASE_DOMAIN)
+print ( "Site: %s" % site_id )
+
+set_dns_record ( site_id, 'A', INSTANCE_NAME + SUB_DOMAIN_PART, BASE_DOMAIN, PUBLIC_IP )
+set_dns_record ( site_id, 'A', '*.' + INSTANCE_NAME + SUB_DOMAIN_PART, BASE_DOMAIN, PUBLIC_IP )
+

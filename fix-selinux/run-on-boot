@@ -1,0 +1,38 @@
+#!/usr/bin/bash
+
+set -e
+
+if [ ! -e /var/log/fix-selinux-phase1 ]; then
+
+	sed -i '/^SELINUX=/d' /etc/selinux/config
+	echo "SELINUX=permissive" >> /etc/selinux/config
+
+	install -m 0644 /root/iot-cloud-stack-ece2018.git/okd-setup/fix-selinux/run-on-boot.service /usr/lib/systemd/system/run-on-boot.service
+	systemctl daemon-reload
+
+	systemctl enable run-on-boot.service
+
+	touch /var/log/fix-selinux-phase1
+	reboot
+
+elif [ ! -e /var/log/fix-selinux-phase2 ]; then
+
+	sed -i '/^SELINUX=/d' /etc/selinux/config
+	echo "SELINUX=enforcing" >> /etc/selinux/config
+	setenforce 1
+
+	touch /var/log/fix-selinux-phase2
+	reboot
+
+elif [ ! -e /var/log/fix-selinux-phase3 ]; then
+
+	systemctl disable run-on-boot.service
+
+	touch /var/log/fix-selinux-phase3
+	/root/iot-cloud-stack-ece2018.git/okd-setup/okd/setup &> /var/log/okd-setup.log
+
+	rm /usr/lib/systemd/system/run-on-boot.service
+	systemctl daemon-reload
+
+	reboot -f
+fi

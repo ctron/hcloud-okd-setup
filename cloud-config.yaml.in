@@ -1,0 +1,66 @@
+#cloud-config
+
+bootcmd:
+  - getenforce
+  - setenforce Enforcing
+
+package_update: true
+
+packages:
+ - NetworkManager
+ - httpd-tools
+ - openssh-server
+ - wget
+ - git
+ - net-tools
+ - bind-utils
+ - yum-utils
+ - iptables-services
+ - bridge-utils
+ - bash-completion
+ - kexec-tools
+ - sos
+ - psacct
+ - docker-1.13.1
+ - lvm2
+ - gettext
+
+growpart:
+   mode: off
+
+write_files:
+ - path: /etc/sysconfig/okd-setup
+   owner: root:root
+   permissions: 0600
+   content: |
+     PUBLIC_NAME="$PUBLIC_NAME"
+     PRIVATE_KEY_BASE="$PRIVATE_KEY_BASE"
+
+runcmd:
+ - [ parted, "/dev/sda", print ]
+ - [ parted, "/dev/sda", mkpart, primary, ext2, "50GB", "100%" ]
+ - [ parted, "/dev/sda", set, "2", lvm, on ]
+ - [ growpart, "/dev/sda", "1" ] 
+ - [ partx, "--update", "/dev/sda" ]
+ - [ resize2fs, "/dev/sda1" ] # use xfs_growfs for ext4
+ - [ pvcreate, "/dev/sda2" ]
+ - [ vgcreate, "docker-vg", "/dev/sda2" ]
+ - [ parted, "/dev/sda", print ]
+ - [ bash, "-c", "echo VG=docker-vg > /etc/sysconfig/docker-storage-setup" ]
+
+ - [ yum, "-y", install, "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm" ]
+ - [ sed, "-i", "-e", "s/^enabled=1/enabled=0/", /etc/yum.repos.d/epel.repo ]
+ - [ yum, "-y", "--enablerepo=epel", install, ansible, pyOpenSSL ]
+
+ - [ systemctl, start, NetworkManager ]
+ 
+ - - bash
+   - '-c'
+   - >-
+     sed -i '/^OPTIONS=/d' /etc/sysconfig/docker && echo "OPTIONS=' --selinux-enabled       --signature-verification=False --log-opt max-size=50m --log-opt max-file=5'" >> /etc/sysconfig/docker
+
+ - [ systemctl, enable, docker.service ]
+ - [ systemctl, start, docker.service ]
+
+ - [ git, clone, "--recursive", "https://github.com/ctron/iot-cloud-stack-ece2018.git", "/root/iot-cloud-stack-ece2018.git" ]
+ - [ "/root/iot-cloud-stack-ece2018.git/okd-setup/fix-selinux/run-on-boot" ]

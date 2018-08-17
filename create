@@ -1,0 +1,52 @@
+#!/usr/bin/bash
+
+set -e
+
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+
+INSTANCE_NAME=${1:-cluster01}
+
+echo "Creating: $INSTANCE_NAME"
+
+die() { echo "$*" 1>&2 ; exit 1; }
+
+# Get the IPv4 address of a server instance
+hcloud_ipv4_server() {
+	hcloud server describe "$1" | grep "IP:" | grep -v "::" | awk '// {print $2;}'
+}
+
+test -f "$SCRIPT_DIR/config" || die "File 'config' is missing. You didn't read the docs, did you?"
+set -a
+source "$SCRIPT_DIR/config"
+set +a
+
+test -n "$SSH_KEY_NAME" || die "'SSH_KEY_NAME' is not configured"
+test -n "$SERVER_TYPE" || die "'SERVER_TYPE' is not configured"
+test -n "$PRIVATE_KEY_BASE" || echo "'PRIVATE_KEY_BASE' is not configured, fallback to self-signed setup."
+
+if [ -n "$BASE_DOMAIN" ]; then
+	PUBLIC_NAME=${INSTANCE_NAME}
+	if [ -n "$SUB_DOMAIN_PART" ]; then
+		PUBLIC_NAME=${PUBLIC_NAME}.${SUB_DOMAIN_PART}
+	fi
+	PUBLIC_NAME=${PUBLIC_NAME}.${BASE_DOMAIN}
+fi
+echo "Using DNS name: $PUBLIC_NAME"
+
+export PRIVATE_KEY_BASE
+export PUBLIC_NAME
+
+envsubst < cloud-config.yaml.in | hcloud server create --ssh-key "$SSH_KEY_NAME" --datacenter "$DATACENTER" --image centos-7 --type "$SERVER_TYPE" --name "$INSTANCE_NAME" --user-data-from-file -
+
+if [ -n "$BASE_DOMAIN" ]; then
+	PUBLIC_IP="$(hcloud_ipv4_server)"
+
+	#
+	# The next script has to set the following DNS records:
+	#
+	#    ${INSTANCE_NAME}${SUB_DOMAIN_PART}${BASE_DOMAIN}      A  ${PUBLIC_IP}
+	#    *.${INSTANCE_NAME}${SUB_DOMAIN_PART}${BASE_DOMAIN}    A  ${PUBLIC_IP}
+	#
+
+	$SCRIPT_DIR/set_dns_record.${DNS_MODE:-manual} "$INSTANCE_NAME" "$SUB_DOMAIN_PART" "$BASE_DOMAIN" "$PUBLIC_IP"
+fi

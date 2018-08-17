@@ -1,0 +1,69 @@
+#!/usr/bin/bash
+
+set -e
+
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+cd "$SCRIPT_DIR"
+
+source /etc/sysconfig/okd-setup
+
+export PUBLIC_IP=$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
+
+# fallback public name
+
+if [ -z "$PUBLIC_NAME" ]; then
+	# generate public name based on nip.io
+	PUBLIC_NAME=${PUBLIC_IP}.nip.io
+fi
+
+# wait for DNS to resolve to this IP
+
+while [ "$(host -t A $PUBLIC_NAME | awk '// {print $4}')" != "$PUBLIC_IP" ]; do
+	echo "Waiting for DNS to resolve $PUBLIC_NAME to $PUBLIC_IP"
+done
+
+# generate inventory file
+
+export PUBLIC_NAME
+envsubst < inventory.txt.in > inventory.txt
+
+# test and download key
+
+if [ -n "$PRIVATE_KEY_BASE" ]; then
+	install -m 0700 -d /root/certs/
+	curl -sL "${PRIVATE_KEY_BASE}/server.key" -o /root/certs/server.key
+	curl -sL "${PRIVATE_KEY_BASE}/server.cer" -o /root/certs/server.cer
+	curl -sL "${PRIVATE_KEY_BASE}/fullchain.cer" -o /root/certs/fullchain.cer
+	sed -i '/^PRIVATE_KEY_BASE=/d' /etc/sysconfig/okd-setup
+fi
+
+# test for self signed fallback
+
+if [ ! -r "/root/certs/server.key" ]; then
+	# fallback to self signed certs
+	sed -i '/^openshift_master_overwrite_named_certificates=/d' inventory.txt
+	sed -i '/^openshift_master_named_certificates=/d' inventory.txt
+	sed -i '/^openshift_hosted_router_certificate=/d' inventory.txt
+fi
+
+# generate a local ssh-key
+
+ssh-keygen -b 4096 -t rsa -f ~/.ssh/id_rsa -q -N ""
+
+# self authorize local key
+
+cat ~/.ssh/id_rsa.pub  >> ~/.ssh/authorized_keys
+chmod 0600 ~/.ssh/authorized_keys
+
+# auto-accept local host key
+
+ssh root@$PUBLIC_IP -oStrictHostKeyChecking=no id
+
+# run OKD deployment
+
+ansible-playbook -u root -i inventory.txt openshift-ansible/playbooks/prerequisites.yml
+ansible-playbook -u root -i inventory.txt openshift-ansible/playbooks/deploy_cluster.yml
+
+# create HTTP user
+
+htpasswd -b -c /etc/origin/master/htpasswd "developer" "developer"
