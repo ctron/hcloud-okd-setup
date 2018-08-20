@@ -1,3 +1,9 @@
+# Eclipse IDE
+
 .project
+.pydevproject
+
+# Local config file
 
 /config
+
