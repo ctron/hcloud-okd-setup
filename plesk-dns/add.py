@@ -14,21 +14,14 @@ import PleskApiClient
 
 import sys
 import os
-import json
+import logging
 
+logging.basicConfig(level=logging.DEBUG)
 
 SITE_NAME = sys.argv[1]
 TYPE = sys.argv[2]
-HOST = sys.argv[3]
+HOST = sys.argv[3]+"."
 VALUE = sys.argv[4]
-
-INSTANCE_NAME = sys.argv[1]
-SUB_DOMAIN_PART = sys.argv[2]
-BASE_DOMAIN = sys.argv[3]
-PUBLIC_IP = sys.argv[4]
-
-if not SUB_DOMAIN_PART.startswith("."):
-    SUB_DOMAIN_PART = "." + SUB_DOMAIN_PART
 
 REMOTE_URL=os.environ["PLESK_URL"]
 REMOTE_USER=os.environ["PLESK_USER"]
@@ -37,10 +30,10 @@ REMOTE_PASSWORD=os.environ["PLESK_PASSWORD"]
 client = PleskApiClient.PleskApiClient(REMOTE_URL, REMOTE_USER, REMOTE_PASSWORD, SITE_NAME)
 
 print ( "Site: %s" % client.site_id )
+print ( "Adding: %s/%s = %s" % (TYPE, HOST, VALUE))
 
 client.dns_add(TYPE, HOST, VALUE)
 
-
-#set_dns_record ( site_id, 'A', INSTANCE_NAME + SUB_DOMAIN_PART, BASE_DOMAIN, PUBLIC_IP )
-#set_dns_record ( site_id, 'A', '*.' + INSTANCE_NAME + SUB_DOMAIN_PART, BASE_DOMAIN, PUBLIC_IP )
+for entry in client.dns_list():
+    print(str(entry))
 
