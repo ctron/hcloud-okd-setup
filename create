@@ -3,12 +3,11 @@
 set -e
 
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+source "${SCRIPT_DIR}/common" 
 
 INSTANCE_NAME=${1:-cluster01}
 
 echo "Creating: $INSTANCE_NAME"
-
-die() { echo "$*" 1>&2 ; exit 1; }
 
 # Get the IPv4 address of a server instance
 hcloud_ipv4_server() {
@@ -41,12 +40,9 @@ envsubst < cloud-config.yaml.in | hcloud server create --ssh-key "$SSH_KEY_NAME"
 if [ -n "$BASE_DOMAIN" ]; then
 	PUBLIC_IP="$(hcloud_ipv4_server)"
 
-	#
-	# The next script has to set the following DNS records:
-	#
-	#    ${INSTANCE_NAME}${SUB_DOMAIN_PART}${BASE_DOMAIN}      A  ${PUBLIC_IP}
-	#    *.${INSTANCE_NAME}${SUB_DOMAIN_PART}${BASE_DOMAIN}    A  ${PUBLIC_IP}
-	#
+	$SCRIPT_DIR/dns/set_dns_record.${DNS_MODE:-lexicon} "$INSTANCE_NAME" "$SUB_DOMAIN_PART" "$BASE_DOMAIN" "$PUBLIC_IP"
 
-	$SCRIPT_DIR/set_dns_record.${DNS_MODE:-manual} "$INSTANCE_NAME" "$SUB_DOMAIN_PART" "$BASE_DOMAIN" "$PUBLIC_IP"
+	echo "DNS updated:"
+	echo "     ${PUBLIC_NAME}   A   $PUBLIC_IP"
+	echo "   *.${PUBLIC_NAME}   A   $PUBLIC_IP"
 fi

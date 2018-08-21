@@ -1,0 +1,19 @@
+#!/usr/bin/bash
+
+set -e
+
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+source "${SCRIPT_DIR}/../common"
+
+which lexicon &>/dev/null || die "'lexicon' binary not found in path"
+
+INSTANCE_NAME="$1"
+SUB_DOMAIN_PART="$2"
+BASE_DOMAIN="$3"
+PUBLIC_IP="$4"
+
+lexicon "$PROVIDER" $LEXICON_OPTS delete "${BASE_DOMAIN}" A --name "${INSTANCE_NAME}${SUB_DOMAIN_PART}.${BASE_DOMAIN}"
+lexicon "$PROVIDER" $LEXICON_OPTS delete "${BASE_DOMAIN}" A --name "*.${INSTANCE_NAME}${SUB_DOMAIN_PART}.${BASE_DOMAIN}"
+
+lexicon "$PROVIDER" $LEXICON_OPTS create "${BASE_DOMAIN}" A --name "${INSTANCE_NAME}${SUB_DOMAIN_PART}.${BASE_DOMAIN}" --content "${PUBLIC_IP}"
+lexicon "$PROVIDER" $LEXICON_OPTS create "${BASE_DOMAIN}" A --name "*.${INSTANCE_NAME}${SUB_DOMAIN_PART}.${BASE_DOMAIN}" --content "${PUBLIC_IP}"
