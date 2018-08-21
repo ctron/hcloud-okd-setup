@@ -3,7 +3,10 @@
 set -e
 
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+
+set -a
 source "${SCRIPT_DIR}/../common"
+set +a
 
 which lexicon &>/dev/null || die "'lexicon' binary not found in path"
 

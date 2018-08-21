@@ -13,10 +13,9 @@ SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 
 die() { echo "$*" 1>&2 ; exit 1; }
 
+set -a
 source "${SCRIPT_DIR}/../config"
-
-export PROVIDER
-export LEXICON_OPTS
+set +a
 
 if [ -z "$ACME_SH" ]; then
 	which acme.sh &>/dev/null && ACME_SH=acme.sh || die "'ACME_SH' not set and 'acme.sh' is not in the PATH"
