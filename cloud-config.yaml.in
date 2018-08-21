@@ -35,6 +35,8 @@ write_files:
    content: |
      PUBLIC_NAME="$PUBLIC_NAME"
      PRIVATE_KEY_BASE="$PRIVATE_KEY_BASE"
+     DEVELOPER_PASSWORD="$DEVELOPER_PASSWORD"
+     ADMIN_PASSWORD="$ADMIN_PASSWORD"
 
 runcmd:
  - [ parted, "/dev/sda", print ]

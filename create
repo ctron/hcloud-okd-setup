@@ -19,6 +19,8 @@ set -a
 source "$SCRIPT_DIR/config"
 set +a
 
+: ${DEVELOPER_PASSWORD:=developer}
+
 test -n "$SSH_KEY_NAME" || die "'SSH_KEY_NAME' is not configured"
 test -n "$SERVER_TYPE" || die "'SERVER_TYPE' is not configured"
 test -n "$PRIVATE_KEY_BASE" || echo "'PRIVATE_KEY_BASE' is not configured, fallback to self-signed setup."
@@ -36,6 +38,11 @@ export PRIVATE_KEY_BASE
 export PUBLIC_NAME
 
 envsubst < cloud-config.yaml.in | hcloud server create --ssh-key "$SSH_KEY_NAME" --datacenter "$DATACENTER" --image centos-7 --type "$SERVER_TYPE" --name "$INSTANCE_NAME" --user-data-from-file -
+
+echo "Developer credentials: developer / $DEVELOPER_PASSWORD"
+if [ -n "$ADMIN_PASSWORD" ]; then
+	echo "Admin credentials: admin / $ADMIN_PASSWORD"
+fi
 
 if [ -n "$BASE_DOMAIN" ]; then
 	PUBLIC_IP="$(hcloud_ipv4_server)"

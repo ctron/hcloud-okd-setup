@@ -48,6 +48,22 @@ DATACENTER="nbg1-dc3"
 # PLESK_HOST, PLESK_PORT, PLESK_USER, PLESK_PASSWORD as well.
 #
 
+#
+# The password for the developer user
+#
+# If unset, 'developer' will be used.
+#
+# DEVELOPER_PASSWORD=developer
+#
+
+#
+# The password for the admin user
+#
+# If unset, no admin user will be created.
+#
+# ADMIN_PASSWORD=
+#
+
 # DNS_MODE=manual
 
 #
