@@ -1,0 +1,48 @@
+#!/bin/bash
+
+set -e
+
+die() { echo "$*" 1>&2 ; exit 1; }
+
+PV_BASE="/exports/pvs"
+PUBLIC_IP=$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
+
+test -z "$1" && die "PV size missing"
+pvsize=$1
+shift
+
+echo "PV size: $pvsize"
+
+create() {
+    local pvnr="$1"
+    local dir="$PV_BASE/pv$pvnr" 
+    test -d "$dir" && return 0
+
+    install -m 0777 -o nfsnobody - g nfsnobody -D -d "$dir"
+
+    oc create -f - <<__EOF__
+---
+kind: PersistentVolume
+apiVersion: v1
+metadata:
+  name: pv-$pvnr
+spec:
+  accessModes:
+  - ReadWriteOnce
+  capacity:
+    storage: $pvsize
+  nfs:
+    path: $dir
+    server: $PUBLIC_IP
+  persistentVolumeReclaimPolicy: Recycle
+__EOF__
+
+echo "\"$dir\" *(rw,root_squash)" >> /etc/exports.d/okd-setup.exports
+
+}
+
+for i in $*; do
+    create "$i"
+done
+
+exportfs -a

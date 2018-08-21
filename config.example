@@ -64,6 +64,18 @@ DATACENTER="nbg1-dc3"
 # ADMIN_PASSWORD=
 #
 
+#
+# How many local directory PVs to create on setup
+#
+
+# LOCAL_PV_COUNT=20
+
+#
+# Default size of a single local PV
+#
+
+# LOCAL_PV_SIZE=20Gi
+
 # DNS_MODE=manual
 
 #

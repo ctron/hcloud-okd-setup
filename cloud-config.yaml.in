@@ -37,6 +37,8 @@ write_files:
      PRIVATE_KEY_BASE="$PRIVATE_KEY_BASE"
      DEVELOPER_PASSWORD="$DEVELOPER_PASSWORD"
      ADMIN_PASSWORD="$ADMIN_PASSWORD"
+     LOCAL_PV_COUNT="$LOCAL_PV_COUNT"
+     LOCAL_PV_SIZE="$LOCAL_PV_SIZE"
 
 runcmd:
  - [ parted, "/dev/sda", print ]
