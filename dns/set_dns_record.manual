@@ -1,12 +1,15 @@
 #!/usr/bin/bash
 
+
 INSTANCE_NAME="$1"
 SUB_DOMAIN_PART="$2"
 BASE_DOMAIN="$3"
 PUBLIC_IP="$4"
 
+PUBLIC_NAME="${INSTANCE_NAME}${SUB_DOMAIN_PART:+.}${SUB_DOMAIN_PART}.${BASE_DOMAIN}"
+
 echo "Create the following DNS entries:"
 echo "----"
-echo "${INSTANCE_NAME}${SUB_DOMAIN_PART}.${BASE_DOMAIN}      A  ${PUBLIC_IP}"
-echo "*.${INSTANCE_NAME}${SUB_DOMAIN_PART}.${BASE_DOMAIN}    A  ${PUBLIC_IP}"
+echo "  ${PUBLIC_NAME}      A  ${PUBLIC_IP}"
+echo "*.${PUBLIC_NAME}    A  ${PUBLIC_IP}"
 echo "----"

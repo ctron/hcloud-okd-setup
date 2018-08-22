@@ -1,6 +1,6 @@
 # Let's encrypt this setup
 
-This setup makes use of [Let's encrypt](https://letsencrypt.org/) to secure the
+This setup can use [Let's encrypt](https://letsencrypt.org/) to secure the
 whole setup using trusted certificates.
 
 **Note:** If you think Let's encrypt is awesome, then please consider donating:
@@ -49,7 +49,7 @@ re-running all the Ansible playbooks.
 On the other hand, having a single, 90 day certificate works fine for this
 tutorial ;-)
 
-## Do this at home
+## Doing this at home
 
 I can't provide an out-of-the-box setup including TLS+DNS, as this depends
 on what DNS provider you have and which domain structure you want to use.

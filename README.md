@@ -16,10 +16,10 @@ You will need CentOS/RHEL, and a few tools installed:
 
     sudo yum install gettext
 
-If you wanto to use the Plesk DNS support:
+If you want to to use the Lexicon DNS API support:
 
     sudo yum install python34 python34-pip
-    pip3 install --user xmltodict
+    pip3 install --user dns-lexicon
 
 ### Hetzner Cloud
 
@@ -33,6 +33,10 @@ Register your account with `hcloud context create …`. Also see: https://github
 
 You will need to create a file called `config` in this directory. You may use
 the file `config.example` as a basis for this.
+
+### DNS integeration
+
+See: [dns/README.md](dns/README.md)
 
 ### TLS with Let's encrypt
 
@@ -51,9 +55,32 @@ It takes around 10-15 minutes until the installation is ready. You can check
 the progress in the file `/var/log/okd-setup.log`. The setup if complete if
 the last line shows:
 
-    
+    persistentvolume "pv-18" created
+    persistentvolume "pv-19" created
+    persistentvolume "pv-20" created
 
-And the machine rebooted one last time.
+After that the machine will be rebooted one last time.
+
+## Accessing OKD
+
+Once the setup is complete you can access the instance using either the
+Web Console or the `oc` command line tool on port 8443. Using the credentials
+`developer` / `developer` (note: it might be wise to change them!)
+
+## About the environment
+
+By default a user `developer` will be created, which has the password `developer` set
+as a default. You can change this in the configuration.
+
+Optionally you can create an `admin` user, which has cluster admin privileges assigned.
+By default this user will not be created, but you can enable the creating by specifying a
+password for the admin user in the variable `ADMIN_PASSWORD`, in the configuration.
+
+This setup will also create a few PVs, backed by the local storage and attached by using NFS.
+
+The hostname will be printed out by the `create` command. You can access the
+server using the Web UI or the API using the URL `https://<dns-name>:8443`
+
 
 ## The process
 
@@ -79,22 +106,3 @@ This is what will happen when you create a new machine:
 
 The SElinux steps are necessary as Hetzner has SElinux disabled by default,
 however SElinux is required by OKD. Also see [fix-selinux/README.md](fix-selinux/README.md).
-
-## Accessing OKD
-
-Once the setup is complete you can access the instance using either the
-Web Console or the `oc` command line tool on port 8443. Using the credentials
-`developer` / `developer` (note: it might be wise to change them!)
-
-The hostname depends on whether you used a full DNS setup or used the backup
-using `nip.io`. In the latter case, your URL will be something like
-`http://1.2.3.4.nip.ip`, if your instance IP was `1.2.3.4`.
-
-If you have a full DNS setup, then you will have the instance available at:
-
-    https://<INSTANCE_NAME>.<SUB_DOMAIN_PART>.<BASE_DOMAIN>:8443/
-
-Assuming `INSTANCE_NAME=cluster01`, `SUB_DOMAIN_PART=amazing`,
-`BASE_DOMAIN=iot-playground.org`, then the full domain name would be:
-
-    https://cluster01.amazing.iot-playground.org:8443
