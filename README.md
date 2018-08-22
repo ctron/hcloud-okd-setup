@@ -4,6 +4,8 @@ This folder takes care of setting up a new machine with OKD and performs all
 the necessary configuration. The idea is to be able to create a bunch of
 OKD clusters, with proper TLS and DNS support, running on a public infrastructure.
 
+**Note:** This module uses Git submodules. Either clone with `--recursive` or run `git submodule update --init --recursive` after cloning.
+
 ## Prepare yourself
 
 This setup requires a few things before you can start.
