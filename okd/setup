@@ -65,12 +65,15 @@ ssh root@$PUBLIC_IP -oStrictHostKeyChecking=no id
 ansible-playbook -u root -i inventory.txt openshift-ansible/playbooks/prerequisites.yml
 ansible-playbook -u root -i inventory.txt openshift-ansible/playbooks/deploy_cluster.yml
 
+# quick check
+
+export KUBECONFIG=/root/.kube/config
+
 # create HTTP user
 
-touch /etc/origin/master/htpasswd
-htpasswd -b /etc/origin/master/htpasswd "developer" "$DEVELOPER_PASSWORD"
+htpasswd -b -c /etc/origin/master/htpasswd "developer" "$DEVELOPER_PASSWORD"
 
-if [ -n "$ADMIN_PASSWORD"]; then
+if [ -n "$ADMIN_PASSWORD" ]; then
 	htpasswd -b /etc/origin/master/htpasswd "admin" "$ADMIN_PASSWORD"
 	oc adm policy add-cluster-role-to-user cluster-admin admin
 fi

@@ -15,6 +15,7 @@ source "$SCRIPT_DIR/config"
 set +a
 
 : ${DEVELOPER_PASSWORD:=developer}
+export DEVELOPER_PASSWORD
 
 test -n "$SSH_KEY_NAME" || die "'SSH_KEY_NAME' is not configured"
 test -n "$SERVER_TYPE" || die "'SERVER_TYPE' is not configured"
@@ -30,10 +31,12 @@ export PUBLIC_NAME
 
 envsubst < cloud-config.yaml.in | hcloud server create --ssh-key "$SSH_KEY_NAME" --datacenter "$DATACENTER" --image centos-7 --type "$SERVER_TYPE" --name "$INSTANCE_NAME" --user-data-from-file -
 
+echo
 echo "Developer credentials: developer / $DEVELOPER_PASSWORD"
 if [ -n "$ADMIN_PASSWORD" ]; then
 	echo "Admin credentials: admin / $ADMIN_PASSWORD"
 fi
+echo
 
 if [ -n "$BASE_DOMAIN" ]; then
 	$SCRIPT_DIR/update-dns "$INSTANCE_NAME"
