@@ -1,3 +1,8 @@
 #!/usr/bin/bash
 
 die() { echo "$*" 1>&2 ; exit 1; }
+
+# Get the IPv4 address of a server instance
+hcloud_ipv4_server() {
+    hcloud server describe "$1" | grep "IP:" | grep -v "::" | awk '// {print $2;}'
+}

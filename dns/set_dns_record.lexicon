@@ -15,8 +15,16 @@ SUB_DOMAIN_PART="$2"
 BASE_DOMAIN="$3"
 PUBLIC_IP="$4"
 
-lexicon "$PROVIDER" $LEXICON_OPTS delete "${BASE_DOMAIN}" A --name "${INSTANCE_NAME}${SUB_DOMAIN_PART}.${BASE_DOMAIN}"
-lexicon "$PROVIDER" $LEXICON_OPTS delete "${BASE_DOMAIN}" A --name "*.${INSTANCE_NAME}${SUB_DOMAIN_PART}.${BASE_DOMAIN}"
+PUBLIC_NAME="${INSTANCE_NAME}${SUB_DOMAIN_PART:+.}${SUB_DOMAIN_PART}.${BASE_DOMAIN}"
 
-lexicon "$PROVIDER" $LEXICON_OPTS create "${BASE_DOMAIN}" A --name "${INSTANCE_NAME}${SUB_DOMAIN_PART}.${BASE_DOMAIN}" --content "${PUBLIC_IP}"
-lexicon "$PROVIDER" $LEXICON_OPTS create "${BASE_DOMAIN}" A --name "*.${INSTANCE_NAME}${SUB_DOMAIN_PART}.${BASE_DOMAIN}" --content "${PUBLIC_IP}"
+lexicon "$PROVIDER" $LEXICON_OPTS delete "${BASE_DOMAIN}" A --name "${PUBLIC_NAME}"
+lexicon "$PROVIDER" $LEXICON_OPTS delete "${BASE_DOMAIN}" A --name "*.${PUBLIC_NAME}"
+
+lexicon "$PROVIDER" $LEXICON_OPTS create "${BASE_DOMAIN}" A --name "${PUBLIC_NAME}" --content "${PUBLIC_IP}"
+lexicon "$PROVIDER" $LEXICON_OPTS create "${BASE_DOMAIN}" A --name "*.${PUBLIC_NAME}" --content "${PUBLIC_IP}"
+
+echo
+lexicon "$PROVIDER" $LEXICON_OPTS list "${BASE_DOMAIN}" A --name "${PUBLIC_NAME}"
+echo
+lexicon "$PROVIDER" $LEXICON_OPTS list "${BASE_DOMAIN}" A --name "*.${PUBLIC_NAME}"
+echo
