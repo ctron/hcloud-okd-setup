@@ -20,6 +20,7 @@ fi
 
 while [ "$(host -t A $PUBLIC_NAME | awk '// {print $4}')" != "$PUBLIC_IP" ]; do
 	echo "Waiting for DNS to resolve $PUBLIC_NAME to $PUBLIC_IP"
+	sleep 5
 done
 
 # generate inventory file
