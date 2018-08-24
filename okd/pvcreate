@@ -18,7 +18,7 @@ create() {
     local dir="$PV_BASE/pv$pvnr" 
     test -d "$dir" && return 0
 
-    install -m 0777 -o nfsnobody - g nfsnobody -D -d "$dir"
+    install -m 0777 -o nfsnobody -g nfsnobody -D -d "$dir"
 
     oc create -f - <<__EOF__
 ---
