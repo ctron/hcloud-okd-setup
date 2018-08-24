@@ -68,7 +68,7 @@ DATACENTER="nbg1-dc3"
 # How many local directory PVs to create on setup
 #
 
-# LOCAL_PV_COUNT=20
+# LOCAL_PV_COUNT=100
 
 #
 # Default size of a single local PV
