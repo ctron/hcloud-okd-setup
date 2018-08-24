@@ -87,3 +87,7 @@ esac
 
 oc create -n openshift -f https://raw.githubusercontent.com/openshift/jenkins/openshift-3.10/openshift/imagestreams/jenkins-centos7.json
 oc create -n openshift -f https://raw.githubusercontent.com/openshift/jenkins/openshift-3.10/openshift/templates/jenkins-ephemeral.json
+
+# try fixing the NFS recycler
+
+echo "OPENSHIFT_RECYCLER_IMAGE=openshift/origin-recycler:v3.10.0" >> /etc/origin/master/master.env
