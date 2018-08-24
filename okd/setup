@@ -84,3 +84,6 @@ case "${pv_count}" in
 	''|*[!0-9]*) ;;
 	*) "${SCRIPT_DIR}/pvcreate" "${LOCAL_PV_SIZE:-20Gi}" $(seq -w 0 ${pv_count}) ;;
 esac
+
+oc create -n openshift -f https://raw.githubusercontent.com/openshift/jenkins/openshift-3.10/openshift/imagestreams/jenkins-centos7.json
+oc create -n openshift -f https://raw.githubusercontent.com/openshift/jenkins/openshift-3.10/openshift/templates/jenkins-ephemeral.json
