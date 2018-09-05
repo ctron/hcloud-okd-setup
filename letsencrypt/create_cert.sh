@@ -7,6 +7,15 @@
 # then you need to figure it out on your own. Sorry.
 #
 
+#
+# This script expects number of hostnames as input, only the host part!
+#
+#  ./create_cert.sh cluster00 cluster01 cluster02
+#
+# or
+#
+#  ./create_cert.sh $(seq -f cluster%02g 25 50)
+
 set -e
 
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
@@ -26,9 +35,12 @@ fi
 
 DOMAINS=
 
-for i in $(seq -w 0 25); do
-	DOMAINS="$DOMAINS -d cluster${i}.${SUB_DOMAIN_PART}.${BASE_DOMAIN}"
-	DOMAINS="$DOMAINS -d *.cluster${i}.${SUB_DOMAIN_PART}.${BASE_DOMAIN}"
+for i in "$@"; do
+	DOMAINS="$DOMAINS -d ${i}.${SUB_DOMAIN_PART}.${BASE_DOMAIN}"
+	DOMAINS="$DOMAINS -d *.${i}.${SUB_DOMAIN_PART}.${BASE_DOMAIN}"
 done
 
+test -n "$DOMAINS" || die "No domains provided"
+
 "$ACME_SH" $ACME_OPTS --issue $DOMAINS --dns dns_lexicon
+
