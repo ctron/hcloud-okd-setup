@@ -11,10 +11,10 @@ set +a
 INSTANCE_NAME=${1:-cluster01}
 
 PUBLIC_NAME="${INSTANCE_NAME}${SUB_DOMAIN_PART:+.}${SUB_DOMAIN_PART}.${BASE_DOMAIN}"
-PUBLIC_IP="$(hcloud_ipv4_server)"
+PUBLIC_IP="$(hcloud_ipv4_server "$INSTANCE_NAME")"
 
 echo "Using DNS name: $PUBLIC_NAME"
-echo "Using IP: $PUBLIC_NAME"
+echo "Using IP: $PUBLIC_IP"
 
 $SCRIPT_DIR/dns/set_dns_record.${DNS_MODE:-lexicon} "$INSTANCE_NAME" "$SUB_DOMAIN_PART" "$BASE_DOMAIN" "$PUBLIC_IP"
 
