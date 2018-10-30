@@ -3,7 +3,7 @@ Wants=network-online.target
 After=network-online.target
 
 [Service]
-ExecStart=/root/iot-cloud-stack-ece2018.git/okd-setup/fix-selinux/run-on-boot
+ExecStart=/root/hcloud-okd-setup.git/fix-selinux/run-on-boot
 
 [Install]
 WantedBy=multi-user.target

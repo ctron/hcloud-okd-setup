@@ -67,5 +67,5 @@ runcmd:
  - [ systemctl, enable, docker.service ]
  - [ systemctl, start, docker.service ]
 
- - [ git, clone, "--recursive", "https://github.com/ctron/iot-cloud-stack-ece2018.git", "/root/iot-cloud-stack-ece2018.git" ]
- - [ "/root/iot-cloud-stack-ece2018.git/okd-setup/fix-selinux/run-on-boot" ]
+ - [ git, clone, "--recursive", "https://github.com/ctron/hcloud-okd-setup.git", "/root/hcloud-okd-setup.git" ]
+ - [ "/root/hcloud-okd-setup.git/fix-selinux/run-on-boot" ]
