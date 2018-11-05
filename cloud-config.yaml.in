@@ -7,6 +7,11 @@ yum_repos:
     gpgcheck: true
     gpgkey: https://releases.ansible.com/keys/RPM-GPG-KEY-ansible-release.pub
     name: Ansible releases
+  okd-testing:
+    baseurl: https://cbs.centos.org/repos/paas7-openshift-origin311-testing/x86_64/os/
+    enabled: true
+    gpgcheck: false
+    name: OKD testing
 
 package_update: true
 
