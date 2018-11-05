@@ -29,6 +29,11 @@ echo "Using DNS name: $PUBLIC_NAME"
 export PRIVATE_KEY_BASE
 export PUBLIC_NAME
 
+: ${BRANCH_NAME:=$(git rev-parse --abbrev-ref HEAD)}
+: ${BRANCH_NAME:=master}
+echo "Using branch: ${BRANCH_NAME}"
+export BRANCH_NAME
+
 envsubst < cloud-config.yaml.in | hcloud server create --ssh-key "$SSH_KEY_NAME" --datacenter "$DATACENTER" --image centos-7 --type "$SERVER_TYPE" --name "$INSTANCE_NAME" --user-data-from-file -
 
 echo

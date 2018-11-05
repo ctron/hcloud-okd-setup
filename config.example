@@ -102,3 +102,12 @@ DATACENTER="nbg1-dc3"
 # If you want to use a pre-generated SSL key/cert, instead of a self-signed, then
 # you can specify the variable 'PRIVATE_KEY_BASE' with a URL to download
 # the key/cert from. See the 'letsencrypt' folder for more information.
+
+# BRANCH=<current>
+
+#
+# Use a specific branch of this repository
+#
+# If you want to use a branch other than "master" from this repository,
+# you can specify this here. Otherwise it will use the current local branch
+# name as the branch name.
