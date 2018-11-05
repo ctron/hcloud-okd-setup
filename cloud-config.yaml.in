@@ -1,9 +1,5 @@
 #cloud-config
 
-bootcmd:
-  - getenforce
-  - setenforce Enforcing
-
 package_update: true
 
 packages:
