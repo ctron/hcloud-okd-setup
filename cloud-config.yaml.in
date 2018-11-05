@@ -34,6 +34,9 @@ packages:
  - lvm2
  - gettext
 
+growpart:
+   mode: off
+
 write_files:
  - path: /etc/sysconfig/okd-setup
    owner: root:root
@@ -47,7 +50,16 @@ write_files:
      LOCAL_PV_SIZE="$LOCAL_PV_SIZE"
 
 runcmd:
- - [ bash, "-c", "echo STORAGE_DRIVER=overlay > /etc/sysconfig/docker-storage-setup" ]
+ - [ parted, "/dev/sda", print ]
+ - [ parted, "/dev/sda", mkpart, primary, ext2, "50GB", "100%" ]
+ - [ parted, "/dev/sda", set, "2", lvm, on ]
+ - [ growpart, "/dev/sda", "1" ] 
+ - [ partx, "--update", "/dev/sda" ]
+ - [ resize2fs, "/dev/sda1" ] # use xfs_growfs for ext4
+ - [ pvcreate, "/dev/sda2" ]
+ - [ vgcreate, "docker-vg", "/dev/sda2" ]
+ - [ parted, "/dev/sda", print ]
+ - [ bash, "-c", "echo VG=docker-vg > /etc/sysconfig/docker-storage-setup" ]
 
  - [ yum, "-y", update" ]
  - [ yum, "-y", install, "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm" ]
