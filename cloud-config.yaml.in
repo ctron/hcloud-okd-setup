@@ -1,5 +1,13 @@
 #cloud-config
 
+yum_repos:
+  ansible:
+    baseurl: https://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/
+    enabled: false
+    gpgcheck: true
+    gpgkey: https://releases.ansible.com/keys/RPM-GPG-KEY-ansible-release.pub
+    name: Ansible releases
+
 package_update: true
 
 packages:
@@ -51,8 +59,10 @@ runcmd:
  - [ yum, "-y", update" ]
  - [ yum, "-y", install, "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm" ]
  - [ sed, "-i", "-e", "s/^enabled=1/enabled=0/", /etc/yum.repos.d/epel.repo ]
- - [ yum, "-y", "--enablerepo=epel", install, pyOpenSSL ]
- - [ yum, "-y", "--enablerepo=epel", install, "https://dentrassi.de/download/ansible-2.4.3.0-1.el7.noarch.rpm" ]
+
+# Install Ansible 2.6.x and dependencies. Either from EPEL or from Ansible.
+
+ - [ yum, "-y", "--enablerepo=epel", "--enablerepo=ansible", install, pyOpenSSL, "ansible-2.6.7" ]
 
  - [ systemctl, start, NetworkManager ]
  
