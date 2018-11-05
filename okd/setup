@@ -64,6 +64,7 @@ ssh root@$PUBLIC_IP -oStrictHostKeyChecking=no id
 
 ansible-playbook -u root -i inventory.txt openshift-ansible/playbooks/prerequisites.yml
 ansible-playbook -u root -i inventory.txt openshift-ansible/playbooks/deploy_cluster.yml
+# ansible-playbook -u root -i inventory.txt openshift-ansible/playbooks/openshift-prometheus/config.yml
 
 # quick check
 
