@@ -76,6 +76,11 @@ runcmd:
    - >-
      sed -i '/^OPTIONS=/d' /etc/sysconfig/docker && echo "OPTIONS=' --selinux-enabled       --signature-verification=False --log-opt max-size=50m --log-opt max-file=5'" >> /etc/sysconfig/docker
 
+ - - bash
+   - '-c'
+   - >-
+     sed -i '/127.0.0.1 ${INSTANCE_NAME}/d' /etc/hosts && echo $(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1) $(hostname) ${PUBLIC_HOSTNAME} >> /etc/hosts
+
  - [ systemctl, enable, docker.service ]
  - [ systemctl, start, docker.service ]
 
