@@ -9,7 +9,6 @@ deployment_type=origin
 openshift_master_identity_providers=[{'name': 'htpasswd_auth', 'login': 'true', 'challenge': 'true', 'kind': 'HTPasswdPasswordIdentityProvider'}]
 
 openshift_install_examples=false
-openshift_enable_olm=true
 
 # Our name 
 

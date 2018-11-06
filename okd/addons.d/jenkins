@@ -1,0 +1,7 @@
+#!/bin/bash
+
+set -e
+
+oc create -n openshift -f https://raw.githubusercontent.com/openshift/jenkins/openshift-3.11/openshift/imagestreams/jenkins-centos7.json
+oc create -n openshift -f https://raw.githubusercontent.com/openshift/jenkins/openshift-3.11/openshift/templates/jenkins-ephemeral.json
+oc create -n openshift -f https://raw.githubusercontent.com/openshift/jenkins/openshift-3.11/openshift/templates/jenkins-persistent.json
