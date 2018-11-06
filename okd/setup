@@ -91,4 +91,4 @@ oc create -n openshift -f https://raw.githubusercontent.com/openshift/jenkins/op
 
 # try fixing the NFS recycler
 
-echo "OPENSHIFT_RECYCLER_IMAGE=openshift/origin-recycler:v3.10.0" >> /etc/origin/master/master.env
+#echo "OPENSHIFT_RECYCLER_IMAGE=openshift/origin-recycler:v3.10.0" >> /etc/origin/master/master.env
