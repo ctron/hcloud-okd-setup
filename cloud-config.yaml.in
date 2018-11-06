@@ -65,9 +65,9 @@ runcmd:
  - [ yum, "-y", install, "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm" ]
  - [ sed, "-i", "-e", "s/^enabled=1/enabled=0/", /etc/yum.repos.d/epel.repo ]
 
-# Install Ansible 2.6.x and dependencies. Either from EPEL or from Ansible.
+# Install Ansible 2.6.x and dependencies. Should be in okd-testing.
 
- - [ yum, "-y", "--enablerepo=epel", "--enablerepo=ansible", install, pyOpenSSL, "ansible-2.6.7" ]
+ - [ yum, "-y", install, pyOpenSSL, "ansible-2.6.5" ]
 
  - [ systemctl, start, NetworkManager ]
  
