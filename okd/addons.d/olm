@@ -9,4 +9,4 @@ oc create -f "$SCRIPT_DIR/../operator-lifecycle-manager/deploy/okd/manifests/lat
 # Run twice, as the first time the CRD CatalogSource doesn't properly register
 
 sleep 5
-oc create -f "$SCRIPT_DIR/../operator-lifecycle-manager/deploy/okd/manifests/latest/0000_30_09-rh-operators.catalogsource.yaml"
+oc create -f "$SCRIPT_DIR/../operator-lifecycle-manager/deploy/okd/manifests/latest/*-rh-operators.catalogsource.yaml"
