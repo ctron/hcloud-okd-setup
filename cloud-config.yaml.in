@@ -7,11 +7,6 @@ yum_repos:
     gpgcheck: true
     gpgkey: https://releases.ansible.com/keys/RPM-GPG-KEY-ansible-release.pub
     name: Ansible releases
-  okd-testing:
-    baseurl: https://cbs.centos.org/repos/paas7-openshift-origin311-testing/x86_64/os/
-    enabled: true
-    gpgcheck: false
-    name: OKD testing
 
 package_update: true
 
@@ -65,9 +60,9 @@ runcmd:
  - [ yum, "-y", install, "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm" ]
  - [ sed, "-i", "-e", "s/^enabled=1/enabled=0/", /etc/yum.repos.d/epel.repo ]
 
-# Install Ansible 2.6.x and dependencies. Should be in okd-testing.
+# Install Ansible 2.6.x and dependencies. Should be in ansible.
 
- - [ yum, "-y", install, pyOpenSSL, "ansible-2.6.5" ]
+ - [ yum, "-y", install, "--enablerepo=ansible", "--enablerepo=epel", pyOpenSSL, "ansible-2.6.7" ]
 
  - [ systemctl, start, NetworkManager ]
  
