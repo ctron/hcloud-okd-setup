@@ -7,6 +7,12 @@ yum_repos:
     gpgcheck: true
     gpgkey: https://releases.ansible.com/keys/RPM-GPG-KEY-ansible-release.pub
     name: Ansible releases
+  centos-okd:
+    baseurl: http://mirror.centos.org/centos/7/paas/x86_64/openshift-origin311/
+    enabled: true
+    gpgcheck: true
+    gpgkey: http://mirror.centos.org/centos/RPM-GPG-KEY-CentOS-7
+    name: CentOS OKD
 
 package_update: true
 

@@ -25,8 +25,6 @@ openshift_enable_unsupported_configurations=true
 openshift_image_tag=v3.11
 openshift_release=v3.11
 
-openshift_additional_repos=[{'id': 'centos-okd', 'name': 'centos-okd', 'baseurl' :'http://mirror.centos.org/centos/7/paas/x86_64/', 'gpgcheck' :'0', 'enabled' :'1'}
-
 # Registry
 
 openshift_hosted_registry_storage_kind=nfs
