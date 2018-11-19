@@ -46,8 +46,10 @@ verify you are in control of the DNS domain. Second, after the certificate has
 been renewed, it must be rolled out to OKD instances. And this requires
 re-running all the Ansible playbooks.
 
-On the other hand, having a single, 90 day certificate works fine for this
-tutorial ;-)
+When you created new certificates, you need to run the following command in
+order to update them in the cluster:
+
+    ansible-playbook -u root -i inventory.txt openshift-ansible/playbooks/redeploy-certificates.yml
 
 ## Doing this at home
 
