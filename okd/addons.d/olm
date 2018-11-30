@@ -11,8 +11,10 @@ oc create -f "$SCRIPT_DIR/../operator-lifecycle-manager/deploy/okd/manifests/lat
 
 # Run twice, as the first time the CRD CatalogSource doesn't properly register
 
+echo "Phase 2"
+
 sleep 5
 
-echo "Phase 2"
+echo "Phase 3"
 
 oc create -f "$SCRIPT_DIR/../operator-lifecycle-manager/deploy/okd/manifests/latest/*-rh-operators.catalogsource.yaml"
