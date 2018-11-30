@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -e
+
+source /etc/sysconfig/okd-setup
+
+htpasswd -b /etc/origin/master/htpasswd "developer" "$DEVELOPER_PASSWORD"
+
+if [ -n "$ADMIN_PASSWORD" ]; then
+    htpasswd -b /etc/origin/master/htpasswd "admin" "$ADMIN_PASSWORD"
+    oc adm policy add-cluster-role-to-user cluster-admin admin
+fi

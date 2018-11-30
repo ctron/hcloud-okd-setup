@@ -72,23 +72,12 @@ export KUBECONFIG=/root/.kube/config
 
 # create HTTP user
 
-htpasswd -b -c /etc/origin/master/htpasswd "developer" "$DEVELOPER_PASSWORD"
+touch /etc/origin/master/htpasswd
 
-if [ -n "$ADMIN_PASSWORD" ]; then
-	htpasswd -b /etc/origin/master/htpasswd "admin" "$ADMIN_PASSWORD"
-	oc adm policy add-cluster-role-to-user cluster-admin admin
-fi
-
-pv_count="${LOCAL_PV_COUNT:-100}"
-
-case "${pv_count}" in
-	''|*[!0-9]*) ;;
-	*) "${SCRIPT_DIR}/pvcreate" "${LOCAL_PV_SIZE:-20Gi}" $(seq -w 0 ${pv_count}) ;;
-esac
-
-oc create -n openshift -f https://raw.githubusercontent.com/openshift/jenkins/openshift-3.10/openshift/imagestreams/jenkins-centos7.json
-oc create -n openshift -f https://raw.githubusercontent.com/openshift/jenkins/openshift-3.10/openshift/templates/jenkins-ephemeral.json
-
-# try fixing the NFS recycler
-
-echo "OPENSHIFT_RECYCLER_IMAGE=openshift/origin-recycler:v3.10.0" >> /etc/origin/master/master.env
+echo "Running addon scripts:"
+for i in $(find ./addons.d/ -type f -executable | sort); do
+	echo "Running: $i"
+	"$i"
+	echo "Finished: $i"
+done
+echo "Finished all addons"

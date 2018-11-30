@@ -1,4 +1,7 @@
 [submodule "openshift-ansible"]
 	path = okd/openshift-ansible
 	url = https://github.com/openshift/openshift-ansible/
-	branch = release-3.10
+	branch = release-3.11
+[submodule "operator-lifecycle-manager"]
+	path = okd/operator-lifecycle-manager
+	url = https://github.com/operator-framework/operator-lifecycle-manager

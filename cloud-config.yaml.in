@@ -1,8 +1,17 @@
 #cloud-config
 
-bootcmd:
-  - getenforce
-  - setenforce Enforcing
+yum_repos:
+  ansible:
+    baseurl: https://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/
+    enabled: false
+    gpgcheck: true
+    gpgkey: https://releases.ansible.com/keys/RPM-GPG-KEY-ansible-release.pub
+    name: Ansible releases
+  centos-okd:
+    baseurl: http://mirror.centos.org/centos/7/paas/x86_64/openshift-origin311/
+    enabled: true
+    gpgcheck: false
+    name: CentOS OKD
 
 package_update: true
 
@@ -52,10 +61,13 @@ runcmd:
  - [ parted, "/dev/sda", print ]
  - [ bash, "-c", "echo VG=docker-vg > /etc/sysconfig/docker-storage-setup" ]
 
+ - [ yum, "-y", update" ]
  - [ yum, "-y", install, "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm" ]
  - [ sed, "-i", "-e", "s/^enabled=1/enabled=0/", /etc/yum.repos.d/epel.repo ]
- - [ yum, "-y", "--enablerepo=epel", install, pyOpenSSL ]
- - [ yum, "-y", "--enablerepo=epel", install, "https://dentrassi.de/download/ansible-2.4.3.0-1.el7.noarch.rpm" ]
+
+# Install Ansible 2.6.x and dependencies. Should be in ansible.
+
+ - [ yum, "-y", install, "--enablerepo=ansible", "--enablerepo=epel", pyOpenSSL, "ansible-2.6.7" ]
 
  - [ systemctl, start, NetworkManager ]
  
@@ -64,8 +76,13 @@ runcmd:
    - >-
      sed -i '/^OPTIONS=/d' /etc/sysconfig/docker && echo "OPTIONS=' --selinux-enabled       --signature-verification=False --log-opt max-size=50m --log-opt max-file=5'" >> /etc/sysconfig/docker
 
+ - - bash
+   - '-c'
+   - >-
+     sed -i '/127.0.0.1 ${INSTANCE_NAME}/d' /etc/hosts && echo $(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1) $(hostname) ${PUBLIC_HOSTNAME} >> /etc/hosts
+
  - [ systemctl, enable, docker.service ]
  - [ systemctl, start, docker.service ]
 
- - [ git, clone, "--recursive", "https://github.com/ctron/hcloud-okd-setup.git", "/root/hcloud-okd-setup.git" ]
+ - [ git, clone, "--recursive", "-b", "${BRANCH_NAME}", "https://github.com/ctron/hcloud-okd-setup.git", "/root/hcloud-okd-setup.git" ]
  - [ "/root/hcloud-okd-setup.git/fix-selinux/run-on-boot" ]

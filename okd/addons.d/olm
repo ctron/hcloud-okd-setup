@@ -1,0 +1,20 @@
+#!/bin/bash
+
+set -e
+
+SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
+cd "$SCRIPT_DIR"
+
+echo "Phase 1"
+
+oc create -f "$SCRIPT_DIR/../operator-lifecycle-manager/deploy/okd/manifests/latest/" || true
+
+# Run twice, as the first time the CRD CatalogSource doesn't properly register
+
+echo "Phase 2"
+
+sleep 5
+
+echo "Phase 3"
+
+oc create -f "$SCRIPT_DIR/../operator-lifecycle-manager/deploy/okd/manifests/latest/*-rh-operators.catalogsource.yaml" || true
