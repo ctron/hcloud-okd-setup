@@ -7,7 +7,7 @@ cd "$SCRIPT_DIR"
 
 echo "Phase 1"
 
-oc create -f "$SCRIPT_DIR/../operator-lifecycle-manager/deploy/okd/manifests/latest/"
+oc create -f "$SCRIPT_DIR/../operator-lifecycle-manager/deploy/okd/manifests/latest/" || true
 
 # Run twice, as the first time the CRD CatalogSource doesn't properly register
 
@@ -17,4 +17,4 @@ sleep 5
 
 echo "Phase 3"
 
-oc create -f "$SCRIPT_DIR/../operator-lifecycle-manager/deploy/okd/manifests/latest/*-rh-operators.catalogsource.yaml"
+oc create -f "$SCRIPT_DIR/../operator-lifecycle-manager/deploy/okd/manifests/latest/*-rh-operators.catalogsource.yaml" || true
