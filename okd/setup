@@ -78,5 +78,6 @@ echo "Running addon scripts:"
 for i in $(find ./addons.d/ -type f -executable | sort); do
 	echo "Running: $i"
 	"$i"
+	echo "Finished: $i"
 done
 echo "Finished all addons"
