@@ -11,5 +11,5 @@ pv_count="${LOCAL_PV_COUNT:-100}"
 
 case "${pv_count}" in
     ''|*[!0-9]*) ;;
-    *) "${SCRIPT_DIR}/pvcreate" "${LOCAL_PV_SIZE:-20Gi}" $(seq -w 0 ${pv_count}) ;;
+    *) "${SCRIPT_DIR}/../pvcreate" "${LOCAL_PV_SIZE:-20Gi}" $(seq -w 0 ${pv_count}) ;;
 esac

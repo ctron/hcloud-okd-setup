@@ -2,9 +2,6 @@
 
 set -e
 
-SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
-cd "$SCRIPT_DIR"
-
 source /etc/sysconfig/okd-setup
 
 htpasswd -b /etc/origin/master/htpasswd "developer" "$DEVELOPER_PASSWORD"
