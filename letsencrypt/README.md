@@ -10,9 +10,9 @@ Set up the config file and then run:
 
     ./create_cert.sh cluster00
 
-Or, if you want to create more than one (in the form of `clusterNN`):
+Or, if you want to create more than one (0 to 20, in the form of `clusterNN`):
 
-    ./create_cert.sh $(seq -f "cluster%02.f" 20)
+    ./create_cert.sh $(seq -f "cluster%02.f" 0 20)
 
 ## Some details
 
