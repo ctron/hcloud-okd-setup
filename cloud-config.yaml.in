@@ -35,7 +35,7 @@ packages:
  - kexec-tools
  - sos
  - psacct
- - docker-1.13.1
+ - docker-${DOCKER_VERSION}
  - lvm2
  - gettext
 
@@ -53,6 +53,7 @@ write_files:
      ADMIN_PASSWORD="$ADMIN_PASSWORD"
      LOCAL_PV_COUNT="$LOCAL_PV_COUNT"
      LOCAL_PV_SIZE="$LOCAL_PV_SIZE"
+     DOCKER_VERSION="${DOCKER_VERSION}"
 
 runcmd:
  - [ parted, "/dev/sda", print ]

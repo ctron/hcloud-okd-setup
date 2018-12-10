@@ -12,11 +12,8 @@ echo "Creating: $INSTANCE_NAME"
 
 test -f "$SCRIPT_DIR/config" || die "File 'config' is missing. You didn't read the docs, did you?"
 set -a
-source "$SCRIPT_DIR/config"
+source "$SCRIPT_DIR/config.defaults"
 set +a
-
-: ${DEVELOPER_PASSWORD:=developer}
-export DEVELOPER_PASSWORD
 
 test -n "$SSH_KEY_NAME" || die "'SSH_KEY_NAME' is not configured"
 test -n "$SERVER_TYPE" || die "'SERVER_TYPE' is not configured"
