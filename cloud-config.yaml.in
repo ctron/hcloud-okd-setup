@@ -55,7 +55,7 @@ runcmd:
  - [ parted, "/dev/sda", set, "2", lvm, on ]
  - [ growpart, "/dev/sda", "1" ] 
  - [ partx, "--update", "/dev/sda" ]
- - [ resize2fs, "/dev/sda1" ] # use xfs_growfs for ext4
+ - [ resize2fs, "/dev/sda1" ] # use xfs_growfs for xfs
  - [ pvcreate, "/dev/sda2" ]
  - [ vgcreate, "docker-vg", "/dev/sda2" ]
  - [ parted, "/dev/sda", print ]
@@ -65,7 +65,7 @@ runcmd:
  - [ yum, "-y", install, "https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm" ]
  - [ sed, "-i", "-e", "s/^enabled=1/enabled=0/", /etc/yum.repos.d/epel.repo ]
 
-# Install Ansible 2.6.x and dependencies. Should be in ansible.
+# Install Ansible 2.6.x and dependencies. Should be in the "ansible" repository.
 
  - [ yum, "-y", install, "--enablerepo=ansible", "--enablerepo=epel", pyOpenSSL, "ansible-2.6.7" ]
 
