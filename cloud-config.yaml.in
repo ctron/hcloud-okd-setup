@@ -1,5 +1,10 @@
 #cloud-config
 
+#
+# "yum-add-repo" is not verified on "centos"? Sure ...
+#
+unverified_modules: ['yum-add-repo']
+
 yum_repos:
   ansible:
     baseurl: https://releases.ansible.com/ansible/rpm/release/epel-7-x86_64/
