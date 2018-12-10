@@ -6,6 +6,14 @@ whole setup using trusted certificates.
 **Note:** If you think Let's encrypt is awesome, then please consider donating:
           https://letsencrypt.org/donate/
 
+Set up the config file and then run:
+
+    ./create_cert.sh cluster00
+
+Or, if you want to create more than one (in the form of `clusterNN`):
+
+    ./create_cert.sh $(seq -f "cluster%02.f" 20)
+
 ## Some details
 
 This setup will re-use the same wildcard certificate for all cluster instances.

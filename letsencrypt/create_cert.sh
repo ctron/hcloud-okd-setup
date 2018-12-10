@@ -40,7 +40,7 @@ for i in "$@"; do
 	DOMAINS="$DOMAINS -d *.${i}.${SUB_DOMAIN_PART}.${BASE_DOMAIN}"
 done
 
-test -n "$DOMAINS" || die "No domains provided"
+test -n "$DOMAINS" || die "No domains provided. Call with a bunch of hostname (hostname only) to create certs for."
 
 "$ACME_SH" $ACME_OPTS --issue $DOMAINS --dns dns_lexicon
 
