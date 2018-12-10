@@ -84,7 +84,7 @@ runcmd:
  - - bash
    - '-c'
    - >-
-     sed -i '/127.0.0.1 ${INSTANCE_NAME}/d' /etc/hosts && echo $(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1) $(hostname) ${PUBLIC_HOSTNAME} >> /etc/hosts
+     sed -i '/127.0.0.1 ${INSTANCE_NAME}/d' /etc/hosts && echo $(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1) $(hostname) ${PUBLIC_NAME} >> /etc/hosts
 
  - [ systemctl, enable, docker.service ]
  - [ systemctl, start, docker.service ]
