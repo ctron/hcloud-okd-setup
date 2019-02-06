@@ -48,7 +48,7 @@ ${PUBLIC_IP}
 ${PUBLIC_IP}
 
 [nodes]
-${PUBLIC_IP} openshift_ip=${PUBLIC_IP} openshift_public_ip=${PUBLIC_IP} openshift_hostname=${PUBLIC_NAME} openshift_public_hostname=${PUBLIC_NAME} openshift_node_group_name='node-config-all-in-one'
+${PUBLIC_IP} openshift_ip=${PUBLIC_IP} openshift_public_ip=${PUBLIC_IP} openshift_public_hostname=${PUBLIC_NAME} openshift_node_group_name='node-config-all-in-one'
 
 [nfs]
 ${PUBLIC_IP}
