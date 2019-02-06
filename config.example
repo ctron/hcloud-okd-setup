@@ -19,9 +19,21 @@ SSH_KEY_NAME="<name of key>"
 # With great power come great bills ;-)
 #
 # List all available server types with:
-#   hcloud  server-type list
+#   hcloud server-type list
 
 SERVER_TYPE="cx51"
+
+#
+# The size of the root partition.
+#
+# This will be passed on to "mkpart" for sizing the partition.
+#
+# **Note:** Of course this cannot be more than the actual disk you have.
+#           Also do you need to reserve some space for the remaining thin
+#           pool, which is used for docker. Unfortunately Hetzner decided to
+#           build CentOS images with ext4, so you can't use overlayfs with xfs.
+
+ROOT_PARTITION_SIZE="50GB"
 
 #
 # Private key base URL

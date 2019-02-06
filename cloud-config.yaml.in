@@ -57,7 +57,7 @@ write_files:
 
 runcmd:
  - [ parted, "/dev/sda", print ]
- - [ parted, "/dev/sda", mkpart, primary, ext2, "50GB", "100%" ]
+ - [ parted, "/dev/sda", mkpart, primary, ext2, "$ROOT_PARTITION_SIZE", "100%" ]
  - [ parted, "/dev/sda", set, "2", lvm, on ]
  - [ growpart, "/dev/sda", "1" ] 
  - [ partx, "--update", "/dev/sda" ]
