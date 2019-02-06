@@ -81,3 +81,9 @@ for i in $(find ./addons.d/ -type f -executable | sort); do
 	echo "Finished: $i"
 done
 echo "Finished all addons"
+
+# final reboot, after the script ends
+
+echo "Let the system settle in for a while, then reboot..."
+sleep 120
+echo "Rebooting ..."
